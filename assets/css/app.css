@@ -20,20 +20,31 @@ ul {
   position: sticky;
   top: 0;
   background: white;
+  display: flex;
+  justify-content: space-between;
 }
 
 .content {
-  max-width: 940px;
+  max-width: 1040px;
   margin: auto;
+  padding: 32px 8px;
 }
 
 .record {
   display: flex;
 }
 
+.search {
+  background: #e8eaef;
+  border: 0;
+  font: inherit;
+  border-radius: 6px;
+  padding: 8px 16px;
+}
+
 .record--header {
   font-size: 14px;
-  color: #aaa;
+  color: #8993a4;
   padding: 8px 0;
   font-weight: normal;
   font-weight: 500;

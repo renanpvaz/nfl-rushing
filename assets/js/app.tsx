@@ -14,7 +14,10 @@ const App: React.FC = () => {
 
   return (
     <div className="content">
-      <h1 className="heading">🏈 NFL Rushing</h1>
+      <header className="heading">
+        <h1>🏈 NFL Rushing</h1>
+        <input className="search" type="search" placeholder="Player search" />
+      </header>
       <ul className="records">
         <li className="record record--header">
           <span className="record__header-cell">Name</span>
