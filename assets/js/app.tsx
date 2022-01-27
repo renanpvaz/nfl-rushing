@@ -1,49 +1,70 @@
-// We import the CSS which is extracted to its own file by esbuild.
-// Remove this line if you add a your own CSS build pipeline (e.g postcss).
 import "../css/app.css";
 
-// If you want to use Phoenix channels, run `mix help phx.gen.channel`
-// to get started and then uncomment the line below.
-// import "./user_socket.js"
-
-// You can include dependencies in two ways.
-//
-// The simplest option is to put them in assets/vendor and
-// import them using relative paths:
-//
-//     import "../vendor/some-package.js"
-//
-// Alternatively, you can `npm install some-package --prefix assets` and import
-// them using a path starting with the package name:
-//
-//     import "some-package"
-//
-
-// Include phoenix_html to handle method=PUT/DELETE in forms and buttons.
-import "phoenix_html";
-// Establish Phoenix Socket and LiveView configuration.
-// import {Socket} from "phoenix"
-// import {LiveSocket} from "phoenix_live_view"
-// import topbar from "../vendor/topbar"
-
-// let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-// let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
-
-// Show progress bar on live navigation and form submits
-// topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
-// window.addEventListener("phx:page-loading-start", info => topbar.show())
-// window.addEventListener("phx:page-loading-stop", info => topbar.hide())
-
-// connect if there are any LiveViews on the page
-// liveSocket.connect()
-
-// expose liveSocket on window for web console debug logs and latency simulation:
-// >> liveSocket.enableDebug()
-// >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
-// >> liveSocket.disableLatencySim()
-// window.liveSocket = liveSocket
-
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
-ReactDOM.render(<h1>hello!!</h1>, document.getElementById("root"));
+const App: React.FC = () => {
+  const [records, setRecords] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:4000/api/records")
+      .then((res) => res.json())
+      .then((res) => setRecords(res.data));
+  }, []);
+
+  return (
+    <div className="content">
+      <h1 className="heading">🏈 NFL Rushing</h1>
+      <ul className="records">
+        <li className="record record--header">
+          <span className="record__header-cell">Name</span>
+          <span className="record__header-cell">Team</span>
+          <span className="record__header-cell">Pos</span>
+          <span className="record__header-cell">Att/G</span>
+          <span className="record__header-cell">Att</span>
+          <span className="record__header-cell">Yds</span>
+          <span className="record__header-cell">Avg</span>
+          <span className="record__header-cell">Yds/G</span>
+          <span className="record__header-cell">TD</span>
+          <span className="record__header-cell">Lng</span>
+          <span className="record__header-cell">1st</span>
+          <span className="record__header-cell">1st%</span>
+          <span className="record__header-cell">20+</span>
+          <span className="record__header-cell">40+</span>
+          <span className="record__header-cell">FUM</span>
+        </li>
+        {records.map((rec) => (
+          <li className="record">
+            <span className="record__cell">{rec.player_name}</span>
+            <span className="record__cell">{rec.team}</span>
+            <span className="record__cell">{rec.position}</span>
+            <span className="record__cell">
+              {rec.rushing_attempts_per_game}
+            </span>
+            <span className="record__cell">{rec.rushing_attempts}</span>
+            <span className="record__cell">{rec.total_rushing_yards}</span>
+            <span className="record__cell">
+              {rec.avg_rushing_yards_per_attempt}
+            </span>
+            <span className="record__cell">{rec.rushing_yards_per_game}</span>
+            <span className="record__cell">{rec.total_rushing_touchdowns}</span>
+            <span className="record__cell">{rec.longest_rush}</span>
+            <span className="record__cell">{rec.rushing_first_downs}</span>
+            <span className="record__cell">
+              {rec.rushing_first_down_percentage}
+            </span>
+            <span className="record__cell">
+              {rec.rushing_20_yards_plus_each}
+            </span>
+            <span className="record__cell">
+              {rec.rushing_40_yards_plus_each}
+            </span>
+            <span className="record__cell">{rec.rushing_fumbles}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.getElementById("root"));
