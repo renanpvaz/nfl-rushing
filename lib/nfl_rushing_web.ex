@@ -22,7 +22,6 @@ defmodule NflRushingWeb do
       use Phoenix.Controller, namespace: NflRushingWeb
 
       import Plug.Conn
-      import NflRushingWeb.Gettext
       alias NflRushingWeb.Router.Helpers, as: Routes
     end
   end
@@ -80,7 +79,6 @@ defmodule NflRushingWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import NflRushingWeb.Gettext
     end
   end
 
@@ -95,8 +93,6 @@ defmodule NflRushingWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
-      import NflRushingWeb.ErrorHelpers
-      import NflRushingWeb.Gettext
       alias NflRushingWeb.Router.Helpers, as: Routes
     end
   end
