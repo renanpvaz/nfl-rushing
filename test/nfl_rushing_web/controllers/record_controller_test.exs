@@ -1,10 +1,6 @@
 defmodule NflRushingWeb.RecordControllerTest do
   use NflRushingWeb.ConnCase
 
-  import NflRushing.RecordsFixtures
-
-  alias NflRushing.Records.Record
-
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end

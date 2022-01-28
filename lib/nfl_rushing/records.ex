@@ -9,6 +9,7 @@ defmodule NflRushing.Records do
   alias NflRushing.Records.Record
 
   @sortable_fields ["total_rushing_yards", "longest_rush", "total_rushing_touchdowns"]
+  @default_order [desc: :total_rushing_yards]
 
   @doc """
   Returns the list of records.
@@ -20,16 +21,34 @@ defmodule NflRushing.Records do
 
   """
   def list_records(params \\ %{}) do
-    Repo.all(from Record, order_by: ^parse_params(params))
+    Record
+    |> apply_filter(params)
+    |> apply_sort(params)
+    |> Repo.all()
   end
 
-  defp parse_params(params) do
-    with sort when is_binary(sort) <- Map.get(params, "sort"),
-         [field, order] when field in @sortable_fields and order in ["asc", "desc"] <-
-           String.split(sort, ":") do
-      [{String.to_existing_atom(order), String.to_existing_atom(field)}]
-    else
-      _ -> [desc: :total_rushing_yards]
+  defp apply_filter(query, %{"search" => search}) do
+    where(query, [r], ilike(r.player_name, ^"%#{String.replace(search, "%", "\\%")}%"))
+  end
+
+  defp apply_filter(query, _), do: query
+
+  defp apply_sort(query, %{"sort" => sort}) do
+    order = String.split(sort, ",") |> parse_order
+    order_by(query, ^order)
+  end
+
+  defp apply_sort(query, _), do: order_by(query, ^@default_order)
+
+  defp parse_order([]), do: []
+
+  defp parse_order([param | rest]) do
+    case String.split(param, ":") do
+      [field, order] when field in @sortable_fields and order in ["asc", "desc"] ->
+        [{String.to_existing_atom(order), String.to_existing_atom(field)} | parse_order(rest)]
+
+      _ ->
+        @default_order
     end
   end
 

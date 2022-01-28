@@ -24,7 +24,7 @@ defmodule NflRushing.RecordsTest do
       assert records == Enum.sort_by(records, &(&1.total_rushing_yards), :desc)
     end
 
-    test "list_records/1 ignores invalid params and disallowed fields using the default order instead" do
+    test "list_records/1 ignores invalid sort params and disallowed fields using the default order instead" do
       record_fixture(%{ total_rushing_yards: 999 })
       record_fixture(%{ total_rushing_yards: -1 })
       record_fixture()
@@ -60,6 +60,15 @@ defmodule NflRushing.RecordsTest do
 
       assert asc == Enum.sort_by(all, &(&1.longest_rush), :asc)
       assert desc == Enum.sort_by(all, &(&1.longest_rush), :desc)
+    end
+
+    test "list_records/1 allows filtering records by player name" do
+      record_fixture(%{ player_name: "Matt" })
+      record_fixture(%{ player_name: "Matthew" })
+      record_fixture()
+      records = Records.list_records(%{"search" => "Mat"})
+
+      assert 2 == length(records)
     end
 
     test "get_record!/1 returns the record with given id" do
