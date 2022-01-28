@@ -15,6 +15,32 @@ ul {
   list-style: none;
 }
 
+input,
+button {
+  background: 0;
+  border: 0;
+  font: inherit;
+  color: inherit;
+}
+
+.button {
+  margin: 0 16px;
+  border-radius: 6px;
+  padding: 8px 16px;
+  box-sizing: border-box;
+  box-shadow: inset 0 0 0 1px #e3e3e3;
+}
+
+.clickable {
+  cursor: pointer;
+  background-color: white;
+  transition: background-color ease.2s;
+}
+
+.clickable:hover {
+  background-color: rgb(227 227 227 / 60%);
+}
+
 .heading {
   padding: 16px 0;
   position: sticky;
@@ -36,8 +62,6 @@ ul {
 
 .search {
   background: #e8eaef;
-  border: 0;
-  font: inherit;
   border-radius: 6px;
   padding: 8px 16px;
 }

@@ -3,20 +3,35 @@ import "../css/app.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
+const SortableColumnHeader = ({ field, label, onToggle, sorting }) => (
+  <button
+    className="record__header-cell clickable"
+    onClick={() => {
+      onToggle([field, sorting[1] === "asc" ? "desc" : "asc"]);
+    }}
+  >
+    {field === sorting[0] ? (sorting[1] === "asc" ? "↑" : "↓") : ""} {label}
+  </button>
+);
+
 const App: React.FC = () => {
   const [records, setRecords] = useState([]);
+  const [order, setOrder] = useState(["total_rushing_yards", "desc"]);
 
   useEffect(() => {
-    fetch("http://localhost:4000/api/records")
+    fetch(`http://localhost:4000/api/records?sort=${order[0]}:${order[1]}`)
       .then((res) => res.json())
       .then((res) => setRecords(res.data));
-  }, []);
+  }, [order]);
 
   return (
     <div className="content">
       <header className="heading">
         <h1>🏈 NFL Rushing</h1>
-        <input className="search" type="search" placeholder="Player search" />
+        <div>
+          <button className="button clickable">📄 export</button>
+          <input className="search" type="search" placeholder="Player search" />
+        </div>
       </header>
       <ul className="records">
         <li className="record record--header">
@@ -25,11 +40,26 @@ const App: React.FC = () => {
           <span className="record__header-cell">Pos</span>
           <span className="record__header-cell">Att/G</span>
           <span className="record__header-cell">Att</span>
-          <span className="record__header-cell">Yds</span>
+          <SortableColumnHeader
+            label="Yds"
+            field="total_rushing_yards"
+            sorting={order}
+            onToggle={setOrder}
+          />
           <span className="record__header-cell">Avg</span>
           <span className="record__header-cell">Yds/G</span>
-          <span className="record__header-cell">TD</span>
-          <span className="record__header-cell">Lng</span>
+          <SortableColumnHeader
+            label="TD"
+            field="total_rushing_touchdowns"
+            sorting={order}
+            onToggle={setOrder}
+          />
+          <SortableColumnHeader
+            label="Lng"
+            field="longest_rush"
+            sorting={order}
+            onToggle={setOrder}
+          />
           <span className="record__header-cell">1st</span>
           <span className="record__header-cell">1st%</span>
           <span className="record__header-cell">20+</span>
@@ -37,7 +67,7 @@ const App: React.FC = () => {
           <span className="record__header-cell">FUM</span>
         </li>
         {records.map((rec) => (
-          <li className="record">
+          <li className="record" key={rec.id}>
             <span className="record__cell">{rec.player_name}</span>
             <span className="record__cell">{rec.team}</span>
             <span className="record__cell">{rec.position}</span>

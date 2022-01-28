@@ -6,8 +6,10 @@ defmodule NflRushingWeb.RecordController do
 
   action_fallback NflRushingWeb.FallbackController
 
-  def index(conn, _params) do
-    records = Records.list_records()
+
+  def index(conn, params) do
+    records = Records.list_records(params)
+
     render(conn, "index.json", records: records)
   end
 

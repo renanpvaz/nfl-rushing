@@ -8,6 +8,8 @@ defmodule NflRushing.Records do
 
   alias NflRushing.Records.Record
 
+  @sortable_fields ["total_rushing_yards", "longest_rush", "total_rushing_touchdowns"]
+
   @doc """
   Returns the list of records.
 
@@ -17,8 +19,18 @@ defmodule NflRushing.Records do
       [%Record{}, ...]
 
   """
-  def list_records do
-    Repo.all(Record)
+  def list_records(params \\ %{}) do
+    Repo.all(from Record, order_by: ^parse_params(params))
+  end
+
+  defp parse_params(params) do
+    with sort when is_binary(sort) <- Map.get(params, "sort"),
+         [field, order] when field in @sortable_fields and order in ["asc", "desc"] <-
+           String.split(sort, ":") do
+      [{String.to_existing_atom(order), String.to_existing_atom(field)}]
+    else
+      _ -> [desc: :total_rushing_yards]
+    end
   end
 
   @doc """
