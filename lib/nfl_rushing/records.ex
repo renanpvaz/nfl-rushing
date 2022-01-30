@@ -21,13 +21,17 @@ defmodule NflRushing.Records do
 
   """
   def list_records(params \\ %{}) do
-    Record
-    |> apply_filter(params)
-    |> apply_sort(params)
+    build_query(params)
     |> Repo.all()
   end
 
-  defp apply_filter(query, %{"search" => search}) do
+  def build_query(params) do
+    Record
+    |> apply_filter(params)
+    |> apply_sort(params)
+  end
+
+  defp apply_filter(query, %{"search" => search}) when search != "" do
     where(query, [r], ilike(r.player_name, ^"%#{String.replace(search, "%", "\\%")}%"))
   end
 

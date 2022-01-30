@@ -1,6 +1,6 @@
 import "../css/app.css";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 
 type RushingRecord = {
@@ -48,6 +48,19 @@ const omit = <T, K extends keyof T>(key: K, obj: T): Omit<T, K> => {
   return rest;
 };
 
+const buildQuery = (order: OrderState, search: string) => {
+  const sort = Object.entries(order)
+    .map(([k, v]) => `${k}:${v}`)
+    .join(",");
+  const params = Object.assign(
+    {},
+    search && { search },
+    sort.length && { sort }
+  );
+
+  return new URLSearchParams(params).toString();
+};
+
 const App: React.FC = () => {
   const [records, setRecords] = useState<RushingRecord[]>([]);
   const [search, setSearch] = useState("");
@@ -55,12 +68,10 @@ const App: React.FC = () => {
     total_rushing_yards: "desc",
   });
 
-  useEffect(() => {
-    const sort = Object.entries(order)
-      .map(([k, v]) => `${k}:${v}`)
-      .join(",");
+  const query = useMemo(() => buildQuery(order, search), [order, search]);
 
-    fetch(`http://localhost:4000/api/records?sort=${sort}&search=${search}`)
+  useEffect(() => {
+    fetch(`http://localhost:4000/api/records?${query}`)
       .then((res) => res.json())
       .then((res) => setRecords(res.data));
   }, [search, order]);
@@ -83,7 +94,13 @@ const App: React.FC = () => {
       <header className="heading">
         <h1>🏈 NFL Rushing</h1>
         <div>
-          <button className="button clickable">📄 export</button>
+          <a
+            className="button clickable"
+            href={`http://localhost:4000/api/records/report?${query}`}
+            download="rushing.csv"
+          >
+            📄 Export CSV
+          </a>
           <input
             className="search"
             type="search"
