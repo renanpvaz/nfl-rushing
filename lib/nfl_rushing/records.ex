@@ -38,21 +38,28 @@ defmodule NflRushing.Records do
   defp apply_filter(query, _), do: query
 
   defp apply_sort(query, %{"sort" => sort}) do
-    order = String.split(sort, ",") |> parse_order
+    order =
+      String.split(sort, ",")
+      |> parse_order
+      |> case do
+        {:ok, o} -> o
+        _ -> @default_order
+      end
+
     order_by(query, ^order)
   end
 
   defp apply_sort(query, _), do: order_by(query, ^@default_order)
 
-  defp parse_order([]), do: []
+  defp parse_order([]), do: {:ok, []}
 
   defp parse_order([param | rest]) do
-    case String.split(param, ":") do
-      [field, order] when field in @sortable_fields and order in ["asc", "desc"] ->
-        [{String.to_existing_atom(order), String.to_existing_atom(field)} | parse_order(rest)]
-
-      _ ->
-        @default_order
+    with value <- String.split(param, ":"),
+         [field, order] when field in @sortable_fields and order in ["asc", "desc"] <- value,
+         {:ok, parsed} <- parse_order(rest) do
+      {:ok, [{String.to_existing_atom(order), String.to_existing_atom(field)} | parsed]}
+    else
+      _ -> {:error, :invalid_sorting}
     end
   end
 
