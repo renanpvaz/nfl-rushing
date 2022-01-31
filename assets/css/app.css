@@ -21,7 +21,9 @@ a {
 }
 
 input,
+select,
 button {
+  appearance: none;
   background: 0;
   border: 0;
   font: inherit;
@@ -47,7 +49,7 @@ button {
   display: flex;
 }
 
-.search {
+.input {
   background: #e8eaef;
   border-radius: 6px;
   padding: 8px 16px;
@@ -57,34 +59,34 @@ button {
   margin-bottom: 32px;
 }
 
+.input,
 .button {
-  margin: 0 16px;
   border-radius: 6px;
   padding: 8px 16px;
-  box-sizing: border-box;
+  font-size: 14px;
 }
 
-.button[disabled] {
-  opacity: 0.2;
-}
-
-.button:not(.button--secondary) {
+.button {
   box-shadow: inset 0 0 0 1px #e3e3e3;
+}
+
+.button + * {
+  margin-left: 16px;
 }
 
 .clickable {
   user-select: none;
 }
 
-.clickable,
-.button:not([disabled]) {
+.button,
+.clickable:not([disabled]) {
   cursor: pointer;
   background-color: white;
   transition: background-color ease.2s;
 }
 
-.clickable:hover,
-.button:not([disabled]):hover {
+.button:hover,
+.clickable:not([disabled]):hover {
   background-color: rgb(227 227 227 / 60%);
 }
 
@@ -125,10 +127,23 @@ button {
 
 .pagination {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .pagination__page {
+  width: 50px;
+  display: inline-block;
+  text-align: center;
   line-height: 35px;
-  font-weight: 500;
+  margin: 0 8px;
+}
+
+.pagination__button {
+  box-shadow: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+}
+
+.pagination__button[disabled] {
+  opacity: 0.2;
 }

@@ -30,12 +30,12 @@ export type OrderState = Partial<
 
 type SetParams = (patch: Partial<Params>) => void;
 
-const buildQuery = (page: number, order: OrderState, search: string) => {
+const buildQuery = ({ order, page, pageSize, search }: Params) => {
   const sort = Object.entries(order)
     .map(([k, v]) => `${k}:${v}`)
     .join(",");
   const params = Object.assign(
-    { page: `${page}` },
+    { page: `${page}`, page_size: `${pageSize}` },
     search && { search },
     sort.length && { sort }
   );
@@ -43,24 +43,41 @@ const buildQuery = (page: number, order: OrderState, search: string) => {
   return new URLSearchParams(params).toString();
 };
 
-type State = { records: RushingRecord[]; params: Params; query: string };
+type PageSize = 25 | 50 | 100;
 
-type Params = { page: number; order: OrderState; search: string };
+type State = {
+  records: RushingRecord[];
+  params: Params;
+  query: string;
+  totalPages: number;
+};
+
+type Params = {
+  page: number;
+  order: OrderState;
+  search: string;
+  pageSize: PageSize;
+};
+
+const isValidPageSize = (value: any): value is PageSize =>
+  [25, 50, 100].includes(parseInt(value));
 
 const useRecords = (): [State, SetParams] => {
   const [records, setRecords] = useState<RushingRecord[]>([]);
+  const [totalPages, setTotalPages] = useState(0);
   const [params, setQuery] = useState<Params>({
     page: 1,
     search: "",
+    pageSize: 25,
     order: {
       total_rushing_yards: "desc",
     },
   });
-  const query = useMemo(
-    () => buildQuery(params.page, params.order, params.search),
-    [params]
+  const query = useMemo(() => buildQuery(params), [params]);
+  const state = useMemo(
+    () => ({ query, params, records, totalPages }),
+    [query, records, params, totalPages]
   );
-  const state = useMemo(() => ({ query, params, records }), [query, records]);
 
   const updateParams: SetParams = (patch) => {
     setQuery({ ...params, ...patch });
@@ -69,10 +86,13 @@ const useRecords = (): [State, SetParams] => {
   useEffect(() => {
     fetch(`http://localhost:4000/api/records?${query}`)
       .then((res) => res.json())
-      .then((res) => setRecords(res.data));
+      .then((res) => {
+        setRecords(res.data);
+        setTotalPages(res.total_pages);
+      });
   }, [query]);
 
   return [state, updateParams];
 };
 
-export { useRecords };
+export { useRecords, isValidPageSize };
