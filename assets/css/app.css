@@ -30,6 +30,10 @@ button {
   color: inherit;
 }
 
+*:focus {
+  outline: 2px solid #bdcce5;
+}
+
 .heading {
   padding: 16px 0;
   position: sticky;
