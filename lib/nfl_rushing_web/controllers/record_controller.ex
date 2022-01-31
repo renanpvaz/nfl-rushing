@@ -8,7 +8,6 @@ defmodule NflRushingWeb.RecordController do
 
   def index(conn, params) do
     records = Records.list_records(params)
-
     render(conn, "index.json", records: records)
   end
 

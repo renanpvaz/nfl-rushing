@@ -28,42 +28,58 @@ defmodule NflRushing.RecordsTest do
 
     test "list_records/0 with empty params returns all records" do
       record = record_fixture()
-      assert Records.list_records() == [record]
+      assert Records.list_records().entries == [record]
     end
+
+    test "list_records/0 should limit the amount of records returned" do
+      for _ <- 0..30, do: record_fixture()
+      result = Records.list_records()
+
+      assert 30 > length(result.entries)
+    end
+
+    test "list_records/0 should return 25-record pages" do
+      for _ <- 0..50, do: record_fixture()
+
+      assert 25 == Records.list_records(%{"page" => 1}).entries |> length
+      assert 25 == Records.list_records(%{"page" => 2}).entries |> length
+
+    end
+
 
     test "list_records/0 with empty params returns all records sorted by total_rushing_yards desc as default" do
       record_fixture(%{total_rushing_yards: 999})
       record_fixture(%{total_rushing_yards: -1})
       record_fixture()
-      records = Records.list_records()
+      result = Records.list_records()
 
-      assert records == Enum.sort_by(records, & &1.total_rushing_yards, :desc)
+      assert result.entries == Enum.sort_by(result.entries, & &1.total_rushing_yards, :desc)
     end
 
     test "list_records/1 ignores invalid sort params and disallowed fields using the default order instead" do
       record_fixture(%{total_rushing_yards: 999})
       record_fixture(%{total_rushing_yards: -1})
       record_fixture()
-      all_records = Records.list_records()
-      sorted_records = Enum.sort_by(all_records, & &1.total_rushing_yards, :desc)
+      result = Records.list_records()
+      sorted_records = Enum.sort_by(result.entries, & &1.total_rushing_yards, :desc)
 
-      assert sorted_records == Records.list_records(%{"foo" => "bar"})
-      assert sorted_records == Records.list_records(%{"sort" => "bar"})
-      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards:ascending"})
-      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards-asc"})
-      assert sorted_records == Records.list_records(%{"sort" => "player_name:desc"})
-      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards:asc,"})
+      assert sorted_records == Records.list_records(%{"foo" => "bar"}).entries
+      assert sorted_records == Records.list_records(%{"sort" => "bar"}).entries
+      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards:ascending"}).entries
+      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards-asc"}).entries
+      assert sorted_records == Records.list_records(%{"sort" => "player_name:desc"}).entries
+      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards:asc,"}).entries
       assert sorted_records ==
-               Records.list_records(%{"sort" => "total_rushing_yards:asc,longest_rush"})
+               Records.list_records(%{"sort" => "total_rushing_yards:asc,longest_rush"}).entries
     end
 
     test "list_records/1 allows sorting records by total_rushing_touchdowns" do
       record_fixture(%{total_rushing_touchdowns: 999})
       record_fixture(%{total_rushing_touchdowns: -1})
       record_fixture()
-      all = Records.list_records()
-      asc = Records.list_records(%{"sort" => "total_rushing_touchdowns:asc"})
-      desc = Records.list_records(%{"sort" => "total_rushing_touchdowns:desc"})
+      all = Records.list_records().entries
+      asc = Records.list_records(%{"sort" => "total_rushing_touchdowns:asc"}).entries
+      desc = Records.list_records(%{"sort" => "total_rushing_touchdowns:desc"}).entries
 
       assert asc == Enum.sort_by(all, & &1.total_rushing_touchdowns, :asc)
       assert desc == Enum.sort_by(all, & &1.total_rushing_touchdowns, :desc)
@@ -73,9 +89,9 @@ defmodule NflRushing.RecordsTest do
       record_fixture(%{longest_rush: "999"})
       record_fixture(%{longest_rush: "0"})
       record_fixture()
-      all = Records.list_records()
-      asc = Records.list_records(%{"sort" => "longest_rush:asc"})
-      desc = Records.list_records(%{"sort" => "longest_rush:desc"})
+      all = Records.list_records().entries
+      asc = Records.list_records(%{"sort" => "longest_rush:asc"}).entries
+      desc = Records.list_records(%{"sort" => "longest_rush:desc"}).entries
 
       assert asc == Enum.sort_by(all, & &1.longest_rush, :asc)
       assert desc == Enum.sort_by(all, & &1.longest_rush, :desc)
@@ -85,10 +101,10 @@ defmodule NflRushing.RecordsTest do
       record_fixture(%{total_rushing_touchdowns: 999, total_rushing_yards: 999})
       record_fixture(%{total_rushing_touchdowns: -1, total_rushing_yards: -1})
       record_fixture()
-      all = Records.list_records()
+      all = Records.list_records().entries
 
       records =
-        Records.list_records(%{"sort" => "total_rushing_touchdowns:desc,total_rushing_yards:desc"})
+        Records.list_records(%{"sort" => "total_rushing_touchdowns:desc,total_rushing_yards:desc"}).entries
 
       assert records == Enum.sort_by(all, &[&1.total_rushing_yards, &1.total_rushing_touchdowns], :desc)
     end
@@ -97,7 +113,7 @@ defmodule NflRushing.RecordsTest do
       record_fixture(%{player_name: "Matt"})
       record_fixture(%{player_name: "Matthew"})
       record_fixture()
-      records = Records.list_records(%{"search" => "Mat"})
+      records = Records.list_records(%{"search" => "Mat"}).entries
 
       assert 2 == length(records)
     end
@@ -106,7 +122,7 @@ defmodule NflRushing.RecordsTest do
       record_fixture(%{player_name: "Matt"})
       record_fixture(%{player_name: "Matthew"})
       record_fixture()
-      records = Records.list_records(%{"search" => "t"})
+      records = Records.list_records(%{"search" => "t"}).entries
 
       assert 2 == length(records)
     end

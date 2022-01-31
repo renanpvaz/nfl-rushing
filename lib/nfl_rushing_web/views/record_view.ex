@@ -3,7 +3,11 @@ defmodule NflRushingWeb.RecordView do
   alias NflRushingWeb.RecordView
 
   def render("index.json", %{records: records}) do
-    %{data: render_many(records, RecordView, "record.json")}
+    %{
+      total_pages: records.total_pages,
+      page_size: records.page_size,
+      data: render_many(records.entries, RecordView, "record.json")
+    }
   end
 
   def render("show.json", %{record: record}) do

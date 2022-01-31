@@ -48,12 +48,12 @@ const omit = <T, K extends keyof T>(key: K, obj: T): Omit<T, K> => {
   return rest;
 };
 
-const buildQuery = (order: OrderState, search: string) => {
+const buildQuery = (page: number, order: OrderState, search: string) => {
   const sort = Object.entries(order)
     .map(([k, v]) => `${k}:${v}`)
     .join(",");
   const params = Object.assign(
-    {},
+    { page: `${page}` },
     search && { search },
     sort.length && { sort }
   );
@@ -63,18 +63,16 @@ const buildQuery = (order: OrderState, search: string) => {
 
 const App: React.FC = () => {
   const [records, setRecords] = useState<RushingRecord[]>([]);
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [order, setOrder] = useState<OrderState>({
     total_rushing_yards: "desc",
   });
 
-  const query = useMemo(() => buildQuery(order, search), [order, search]);
-
-  useEffect(() => {
-    fetch(`http://localhost:4000/api/records?${query}`)
-      .then((res) => res.json())
-      .then((res) => setRecords(res.data));
-  }, [search, order]);
+  const query = useMemo(
+    () => buildQuery(page, order, search),
+    [order, search, page]
+  );
 
   const handleSort = (field: SortableField) => {
     const value = order[field];
@@ -89,24 +87,34 @@ const App: React.FC = () => {
     );
   };
 
+  useEffect(() => {
+    fetch(`http://localhost:4000/api/records?${query}`)
+      .then((res) => res.json())
+      .then((res) => setRecords(res.data));
+  }, [search, order, page]);
+
   return (
     <div className="content">
       <header className="heading">
         <h1>🏈 NFL Rushing</h1>
         <div>
           <a
-            className="button clickable"
+            className="button"
             href={`http://localhost:4000/api/records/report?${query}`}
             download="rushing.csv"
           >
             📄 Export CSV
           </a>
+
           <input
             className="search"
             type="search"
             placeholder="Player search"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
           />
         </div>
       </header>
@@ -173,6 +181,23 @@ const App: React.FC = () => {
           </li>
         ))}
       </ul>
+      <footer className="pagination">
+        <button
+          className="button button--secondary"
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
+        >
+          {"<"}
+        </button>
+        <span className="pagination__page">{page}</span>
+        <button
+          className="button button--secondary"
+          onClick={() => setPage(page + 1)}
+          disabled={records.length < 20}
+        >
+          {">"}
+        </button>
+      </footer>
     </div>
   );
 };
