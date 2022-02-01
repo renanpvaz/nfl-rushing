@@ -15,6 +15,7 @@ defmodule NflRushingWeb.RecordView do
   end
 
   def render("record.json", %{record: record}) do
+    lng = Integer.to_string(record.longest_rush) <> if record.touchdown_on_longest_rush?, do: "T", else: ""
     %{
       id: record.id,
       player_name: record.player_name,
@@ -31,7 +32,7 @@ defmodule NflRushingWeb.RecordView do
       rushing_20_yards_plus_each: record.rushing_20_yards_plus_each,
       rushing_40_yards_plus_each: record.rushing_40_yards_plus_each,
       rushing_fumbles: record.rushing_fumbles,
-      longest_rush: record.longest_rush
+      longest_rush: lng
     }
   end
 end
