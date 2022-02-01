@@ -46,7 +46,7 @@ const buildQuery = ({ order, page, pageSize, search }: Params) => {
 type PageSize = 20 | 50 | 100;
 
 type State = {
-  records: RushingRecord[];
+  records: RecordsState;
   params: Params;
   query: string;
   totalPages: number;
@@ -62,8 +62,13 @@ type Params = {
 const isValidPageSize = (value: any): value is PageSize =>
   [20, 50, 100].includes(parseInt(value));
 
+type RecordsState =
+  | { type: "success"; data: RushingRecord[] }
+  | { type: "loading" }
+  | { type: "failure"; message: string };
+
 const useRecords = (): [State, SetParams] => {
-  const [records, setRecords] = useState<RushingRecord[]>([]);
+  const [records, setRecords] = useState<RecordsState>({ type: "loading" });
   const [totalPages, setTotalPages] = useState(0);
   const [params, setQuery] = useState<Params>({
     page: 1,
@@ -87,8 +92,15 @@ const useRecords = (): [State, SetParams] => {
     fetch(`http://localhost:4000/api/records?${query}`)
       .then((res) => res.json())
       .then((res) => {
-        setRecords(res.data);
+        setRecords({ type: "success", data: res.data });
         setTotalPages(res.total_pages);
+      })
+      .catch((error) => {
+        console.error(error);
+        setRecords({
+          type: "failure",
+          message: "Something went wrong while loading the records.",
+        });
       });
   }, [query]);
 
