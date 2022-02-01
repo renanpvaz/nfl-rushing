@@ -1,12 +1,12 @@
-import "../css/app.css";
+import '../css/app.css'
 
-import React from "react";
-import ReactDOM from "react-dom";
-import { useRecords, isValidPageSize } from "./records";
-import { RecordTable } from "./RecordTable";
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { useRecords, isValidPageSize } from './records'
+import { RecordTable } from './RecordTable'
 
 const App: React.FC = () => {
-  const [{ records, totalPages, params, query }, setParams] = useRecords();
+  const [{ records, totalPages, params, query }, setParams] = useRecords()
 
   return (
     <div className="content">
@@ -32,11 +32,11 @@ const App: React.FC = () => {
       </header>
       {(() => {
         switch (records.type) {
-          case "loading":
-            return <span>Loading...</span>;
-          case "failure":
-            return <span>{records.message}</span>;
-          case "success":
+          case 'loading':
+            return <span>Loading...</span>
+          case 'failure':
+            return <span>{records.message}</span>
+          case 'success':
             return (
               <>
                 <RecordTable
@@ -49,7 +49,7 @@ const App: React.FC = () => {
                     className="button"
                     onChange={({ target: { value } }) => {
                       if (isValidPageSize(value))
-                        setParams({ page: 1, pageSize: value });
+                        setParams({ page: 1, pageSize: value })
                     }}
                   >
                     <option value="20">Show 20</option>
@@ -61,7 +61,7 @@ const App: React.FC = () => {
                     onClick={() => setParams({ page: params.page - 1 })}
                     disabled={params.page === 1}
                   >
-                    {"<"}
+                    {'<'}
                   </button>
                   <span className="pagination__page">
                     {params.page} / {totalPages}
@@ -71,15 +71,15 @@ const App: React.FC = () => {
                     onClick={() => setParams({ page: params.page + 1 })}
                     disabled={params.page === totalPages}
                   >
-                    {">"}
+                    {'>'}
                   </button>
                 </footer>
               </>
-            );
+            )
         }
       })()}
     </div>
-  );
-};
+  )
+}
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById('root'))

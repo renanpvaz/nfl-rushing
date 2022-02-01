@@ -1,26 +1,26 @@
-import React from "react";
-import { RushingRecord, OrderState, SortableField } from "./records";
+import React from 'react'
+import { RushingRecord, OrderState, SortableField } from './records'
 
 type SortableColumnHeaderProps = {
-  field: SortableField;
-  label: string;
-  onToggle: (f: SortableField) => void;
-  sorting: OrderState;
-};
+  field: SortableField
+  label: string
+  onToggle: (f: SortableField) => void
+  sorting: OrderState
+}
 
 type RecordTableHeaderProps = {
-  order: OrderState;
-  onSort: (newOrder: OrderState) => void;
-};
+  order: OrderState
+  onSort: (newOrder: OrderState) => void
+}
 
 type RecordTableProps = {
-  data: RushingRecord[];
-} & RecordTableHeaderProps;
+  data: RushingRecord[]
+} & RecordTableHeaderProps
 
 const omit = <T, K extends keyof T>(key: K, obj: T): Omit<T, K> => {
-  const { [key]: _, ...rest } = obj;
-  return rest;
-};
+  const { [key]: _, ...rest } = obj
+  return rest
+}
 
 const SortableColumnHeader: React.FC<SortableColumnHeaderProps> = ({
   field,
@@ -32,26 +32,26 @@ const SortableColumnHeader: React.FC<SortableColumnHeaderProps> = ({
     className="record__header-cell clickable"
     onClick={() => onToggle(field)}
   >
-    {field in sorting ? (sorting[field] === "asc" ? "↑" : "↓") : "-"} {label}
+    {field in sorting ? (sorting[field] === 'asc' ? '↑' : '↓') : '-'} {label}
   </button>
-);
+)
 
 const RecordTableHeader: React.FC<RecordTableHeaderProps> = ({
   order,
   onSort,
 }) => {
   const handleSort = (field: SortableField) => {
-    const value = order[field];
+    const value = order[field]
     const newOrder =
-      value === "asc"
+      value === 'asc'
         ? omit(field, order)
         : {
             ...order,
-            [field]: !value ? "desc" : "asc",
-          };
+            [field]: !value ? 'desc' : 'asc',
+          }
 
-    onSort(newOrder);
-  };
+    onSort(newOrder)
+  }
 
   return (
     <li className="record record--header">
@@ -84,10 +84,10 @@ const RecordTableHeader: React.FC<RecordTableHeaderProps> = ({
       <span className="record__header-cell">1st%</span>
       <span className="record__header-cell">20+</span>
       <span className="record__header-cell">40+</span>
-      <span className="record__header-cell">FUM</span>{" "}
+      <span className="record__header-cell">FUM</span>{' '}
     </li>
-  );
-};
+  )
+}
 
 const RecordTable: React.FC<RecordTableProps> = ({ data, order, onSort }) => {
   return (
@@ -117,6 +117,6 @@ const RecordTable: React.FC<RecordTableProps> = ({ data, order, onSort }) => {
         </li>
       ))}
     </ul>
-  );
-};
-export { RecordTable };
+  )
+}
+export { RecordTable }
