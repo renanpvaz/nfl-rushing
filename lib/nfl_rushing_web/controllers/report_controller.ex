@@ -19,4 +19,4 @@ defmodule NflRushingWeb.ReportController do
 
     conn
   end
-end 
+end

@@ -2,7 +2,24 @@ defmodule NflRushing.Records.Record do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @required_fields [:player_name, :team, :position, :rushing_attempts_per_game, :rushing_attempts, :total_rushing_yards, :avg_rushing_yards_per_attempt, :rushing_yards_per_game, :total_rushing_touchdowns, :rushing_first_downs, :rushing_first_down_percentage, :rushing_20_yards_plus_each, :rushing_40_yards_plus_each, :rushing_fumbles, :longest_rush, :touchdown_on_longest_rush?]
+  @required_fields [
+    :player_name,
+    :team,
+    :position,
+    :rushing_attempts_per_game,
+    :rushing_attempts,
+    :total_rushing_yards,
+    :avg_rushing_yards_per_attempt,
+    :rushing_yards_per_game,
+    :total_rushing_touchdowns,
+    :rushing_first_downs,
+    :rushing_first_down_percentage,
+    :rushing_20_yards_plus_each,
+    :rushing_40_yards_plus_each,
+    :rushing_fumbles,
+    :longest_rush,
+    :touchdown_on_longest_rush?
+  ]
   schema "records" do
     field :avg_rushing_yards_per_attempt, :float
     field :longest_rush, :integer

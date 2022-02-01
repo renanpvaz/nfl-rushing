@@ -43,9 +43,7 @@ defmodule NflRushing.RecordsTest do
 
       assert 25 == Records.list_records(%{"page" => 1}).entries |> length
       assert 25 == Records.list_records(%{"page" => 2}).entries |> length
-
     end
-
 
     test "list_records/0 with empty params returns all records sorted by total_rushing_yards desc as default" do
       record_fixture(%{total_rushing_yards: 999})
@@ -65,10 +63,18 @@ defmodule NflRushing.RecordsTest do
 
       assert sorted_records == Records.list_records(%{"foo" => "bar"}).entries
       assert sorted_records == Records.list_records(%{"sort" => "bar"}).entries
-      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards:ascending"}).entries
-      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards-asc"}).entries
+
+      assert sorted_records ==
+               Records.list_records(%{"sort" => "total_rushing_yards:ascending"}).entries
+
+      assert sorted_records ==
+               Records.list_records(%{"sort" => "total_rushing_yards-asc"}).entries
+
       assert sorted_records == Records.list_records(%{"sort" => "player_name:desc"}).entries
-      assert sorted_records == Records.list_records(%{"sort" => "total_rushing_yards:asc,"}).entries
+
+      assert sorted_records ==
+               Records.list_records(%{"sort" => "total_rushing_yards:asc,"}).entries
+
       assert sorted_records ==
                Records.list_records(%{"sort" => "total_rushing_yards:asc,longest_rush"}).entries
     end
@@ -106,7 +112,8 @@ defmodule NflRushing.RecordsTest do
       records =
         Records.list_records(%{"sort" => "total_rushing_touchdowns:desc,total_rushing_yards:desc"}).entries
 
-      assert records == Enum.sort_by(all, &[&1.total_rushing_yards, &1.total_rushing_touchdowns], :desc)
+      assert records ==
+               Enum.sort_by(all, &[&1.total_rushing_yards, &1.total_rushing_touchdowns], :desc)
     end
 
     test "list_records/1 allows filtering records by player name" do

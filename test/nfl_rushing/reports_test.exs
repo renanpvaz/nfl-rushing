@@ -14,25 +14,25 @@ defmodule NflRushing.ReportsTest do
 
       Reports.generate(%{}, fn stream ->
         assert Enum.take(stream, 2) == [
-          @column_names,
-          [
-            "some player_name",
-            "some team",
-            "some position",
-            120.5,
-            120.5,
-            120.5,
-            120.5,
-            120.5,
-            120.5,
-            "some longest_rush",
-            120.5,
-            120.5,
-            120.5,
-            120.5,
-            120.5
-          ]
-        ]
+                 @column_names,
+                 [
+                   "some player_name",
+                   "some team",
+                   "some position",
+                   120.5,
+                   120.5,
+                   120.5,
+                   120.5,
+                   120.5,
+                   120.5,
+                   "some longest_rush",
+                   120.5,
+                   120.5,
+                   120.5,
+                   120.5,
+                   120.5
+                 ]
+               ]
       end)
     end
 
