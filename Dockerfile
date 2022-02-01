@@ -1,7 +1,8 @@
 FROM elixir:latest
 
-RUN apt-get update && \
-    apt-get install -y postgresql-client && \
+RUN apt-get update && \ 
+    curl -sL https://deb.nodesource.com/setup_16.x | bash && \
+    apt-get install -y nodejs && \
     mix local.hex --force && \
     mix archive.install hex phx_new 1.6.6 --force
 
@@ -9,7 +10,9 @@ RUN mkdir /app
 COPY . /app
 WORKDIR /app
 
-RUN mix do compile
+RUN mix local.rebar --force
+RUN mix deps.get
+RUN cd assets; npm i
 
 EXPOSE 4000
 
