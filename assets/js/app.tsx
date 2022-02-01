@@ -42,7 +42,7 @@ const App: React.FC = () => {
             if (isValidPageSize(value)) setParams({ page: 1, pageSize: value });
           }}
         >
-          <option value="25">Show 25</option>
+          <option value="20">Show 20</option>
           <option value="50">Show 50</option>
           <option value="100">Show 100</option>
         </select>

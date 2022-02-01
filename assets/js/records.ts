@@ -43,7 +43,7 @@ const buildQuery = ({ order, page, pageSize, search }: Params) => {
   return new URLSearchParams(params).toString();
 };
 
-type PageSize = 25 | 50 | 100;
+type PageSize = 20 | 50 | 100;
 
 type State = {
   records: RushingRecord[];
@@ -60,7 +60,7 @@ type Params = {
 };
 
 const isValidPageSize = (value: any): value is PageSize =>
-  [25, 50, 100].includes(parseInt(value));
+  [20, 50, 100].includes(parseInt(value));
 
 const useRecords = (): [State, SetParams] => {
   const [records, setRecords] = useState<RushingRecord[]>([]);
@@ -68,7 +68,7 @@ const useRecords = (): [State, SetParams] => {
   const [params, setQuery] = useState<Params>({
     page: 1,
     search: "",
-    pageSize: 25,
+    pageSize: 20,
     order: {
       total_rushing_yards: "desc",
     },
