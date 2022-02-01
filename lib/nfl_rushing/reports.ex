@@ -1,6 +1,4 @@
 defmodule NflRushing.Reports do
-  import Ecto.Query
-
   alias NflRushing.Repo
   alias NflRushing.Records
 
