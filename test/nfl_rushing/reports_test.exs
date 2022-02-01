@@ -20,17 +20,17 @@ defmodule NflRushing.ReportsTest do
                    "some team",
                    "some position",
                    120.5,
+                   120,
+                   120,
                    120.5,
                    120.5,
+                   120,
+                   85,
+                   120,
                    120.5,
-                   120.5,
-                   120.5,
-                   "some longest_rush",
-                   120.5,
-                   120.5,
-                   120.5,
-                   120.5,
-                   120.5
+                   120,
+                   120,
+                   120
                  ]
                ]
       end)

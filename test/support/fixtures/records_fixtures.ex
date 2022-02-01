@@ -12,20 +12,21 @@ defmodule NflRushing.RecordsFixtures do
       attrs
       |> Enum.into(%{
         avg_rushing_yards_per_attempt: 120.5,
-        longest_rush: "some longest_rush",
+        longest_rush: 85,
         player_name: "some player_name",
         position: "some position",
-        rushing_20_yards_plus_each: 120.5,
-        rushing_40_yards_plus_each: 120.5,
-        rushing_attempts: 120.5,
+        rushing_20_yards_plus_each: 120,
+        rushing_40_yards_plus_each: 120,
+        rushing_attempts: 120,
         rushing_attempts_per_game: 120.5,
         rushing_first_down_percentage: 120.5,
-        rushing_first_downs: 120.5,
-        rushing_fumbles: 120.5,
+        rushing_first_downs: 120,
+        rushing_fumbles: 120,
         rushing_yards_per_game: 120.5,
         team: "some team",
-        total_rushing_touchdowns: 120.5,
-        total_rushing_yards: 120.5
+        total_rushing_touchdowns: 120,
+        total_rushing_yards: 120,
+        touchdown_on_longest_rush?: false
       })
       |> NflRushing.Records.create_record()
 
