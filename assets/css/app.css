@@ -43,6 +43,13 @@ button {
   justify-content: space-between;
 }
 
+.heading__options {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .content {
   max-width: 1040px;
   margin: auto;
@@ -61,6 +68,7 @@ button {
 
 .records {
   margin-bottom: 32px;
+  max-width: 100%;
 }
 
 .input,
@@ -150,4 +158,32 @@ button {
 
 .pagination__button[disabled] {
   opacity: 0.2;
+}
+
+@media (max-width: 867px) {
+  body {
+    font-size: 14px;
+  }
+
+  .content {
+    padding: 8px;
+  }
+
+  .input,
+  .button {
+    font-size: 12px;
+  }
+
+  .records {
+    max-height: 70vh;
+    overflow: auto;
+  }
+
+  .heading {
+    position: static;
+  }
+
+  .record--header {
+    position: static;
+  }
 }

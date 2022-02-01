@@ -12,7 +12,7 @@ const App: React.FC = () => {
     <div className="content">
       <header className="heading">
         <h1>🏈 NFL Rushing</h1>
-        <div>
+        <div className="heading__options">
           <a
             className="button"
             href={`http://localhost:4000/api/records/report?${query}`}
